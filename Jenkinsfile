@@ -1,4 +1,4 @@
-node('node') {
+node {
     stage('Checkout') {
       lastStage = env.STAGE_NAME
       checkout scm
