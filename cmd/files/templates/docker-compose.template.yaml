@@ -31,7 +31,7 @@ services:
       STORJ_METRICS_APP_SUFFIX: sim
       STORJ_ROLE: authservice
       STORJ_WAIT_FOR_SATELLITE: "true"
-    image: ghcr.io/elek/storj-edge:1.14.0
+    image: ghcr.io/elek/storj-edge:1.15.1
     networks:
       default: null
     ports:
@@ -67,7 +67,7 @@ services:
       STORJ_METRICS_APP_SUFFIX: sim
       STORJ_SERVER_ADDRESS: 0.0.0.0:9999
       STORJ_WAIT_FOR_SATELLITE: "true"
-    image: ghcr.io/elek/storj-edge:1.14.0
+    image: ghcr.io/elek/storj-edge:1.15.1
     networks:
       default: null
     ports:
@@ -86,7 +86,7 @@ services:
       STORJ_DEBUG_ADDR: 0.0.0.0:11111
       STORJ_PUBLIC_URL: http://linksharing:8080,http://localhost:8080
       STORJ_WAIT_FOR_SATELLITE: "true"
-    image: ghcr.io/elek/storj-edge:1.14.0
+    image: ghcr.io/elek/storj-edge:1.15.1
     networks:
       default: null
     ports:
@@ -119,7 +119,7 @@ services:
       STORJ_ORDERS_ENCRYPTION_KEYS: 0100000000000000=0100000000000000000000000000000000000000000000000000000000000000
       STORJ_ROLE: satellite-admin
       STORJ_WAIT_FOR_SATELLITE: "true"
-    image: ghcr.io/elek/storj:1.39.6
+    image: ghcr.io/elek/storj:1.45.3
     ports:
       - mode: ingress
         target: 8080
@@ -162,7 +162,7 @@ services:
       STORJ_WAIT_FOR_DB: "true"
       STORJ_CONSOLE_GATEWAY_CREDENTIALS_REQUEST_URL: http://localhost:8888
       STORJ_CONSOLE_LINKSHARING_URL: http://127.0.0.1:8080
-    image: ghcr.io/elek/storj:1.39.6
+    image: ghcr.io/elek/storj:1.45.3
     networks:
       default: null
     ports:
@@ -192,7 +192,7 @@ services:
       STORJ_ORDERS_ENCRYPTION_KEYS: 0100000000000000=0100000000000000000000000000000000000000000000000000000000000000
       STORJ_ROLE: satellite-core
       STORJ_WAIT_FOR_SATELLITE: "true"
-    image: ghcr.io/elek/storj:1.39.6
+    image: ghcr.io/elek/storj:1.45.3
     networks:
       default: null
   storagenode:
@@ -219,7 +219,7 @@ services:
       STORJ_STORAGE_ALLOCATED_DISK_SPACE: 1G
       STORJ_VERSION_SERVER_ADDRESS: http://versioncontrol:8080/
       STORJ_WAIT_FOR_SATELLITE: "true"
-    image: ghcr.io/elek/storj:1.39.6
+    image: ghcr.io/elek/storj:1.45.3
     networks:
       default: null
   uplink:
@@ -228,7 +228,7 @@ services:
     - infinity
     environment:
       STORJ_ROLE: uplink
-    image: ghcr.io/elek/storj:1.39.6
+    image: ghcr.io/elek/storj:1.45.3
     networks:
       default: null
   versioncontrol:
@@ -247,7 +247,7 @@ services:
       STORJ_DEFAULTS: dev
       STORJ_LOG_LEVEL: debug
       STORJ_METRICS_APP_SUFFIX: sim
-    image: ghcr.io/elek/storj:1.39.6
+    image: ghcr.io/elek/storj:1.45.3
     networks:
       default: null
     ports:
