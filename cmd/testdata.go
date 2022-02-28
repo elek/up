@@ -6,6 +6,7 @@ package cmd
 import (
 	"context"
 	"math/rand"
+	"storj.io/common/pb"
 	"time"
 
 	"github.com/shopspring/decimal"
@@ -45,6 +46,16 @@ func testdataCmd() *cobra.Command {
 		}
 		generators = append(generators, subCmd)
 	}
+	{
+		subCmd := &cobra.Command{
+			Use:   "project-usage",
+			Short: "Generated bandwidth rollups for buckets and projects",
+			RunE: func(cmd *cobra.Command, args []string) error {
+				return generateProjectUsage(*database)
+			},
+		}
+		generators = append(generators, subCmd)
+	}
 
 	{
 		subCmd := &cobra.Command{
@@ -68,6 +79,39 @@ func testdataCmd() *cobra.Command {
 
 }
 
+func generateProjectUsage(database string) error {
+	ctx := context.Background()
+	db, err := satellitedb.Open(ctx, zap.L().Named("db"), database, satellitedb.Options{ApplicationName: "satellite-compensation"})
+	if err != nil {
+		return errs.Wrap(err)
+	}
+	defer func() {
+		_ = db.Close()
+	}()
+
+	projects, err := db.Console().Projects().GetAll(ctx)
+	if err != nil {
+		return err
+	}
+	for _, p := range projects {
+		intervalStart := time.Now().Round(time.Hour)
+		for i := 0; i < 24; i++ {
+			usage := int64(1024 * 1024 * 1024)
+			err = db.Orders().UpdateBucketBandwidthAllocation(ctx, p.ID, []byte("demo-bucket"), pb.PieceAction_GET, usage, intervalStart)
+			if err != nil {
+				return err
+			}
+			err = db.Orders().UpdateBucketBandwidthSettle(ctx, p.ID, []byte("demo-bucket"), pb.PieceAction_GET, usage, 0, intervalStart)
+			if err != nil {
+				return err
+			}
+			db.StoragenodeAccounting().SaveRollup()
+			intervalStart = intervalStart.Add(-1 * time.Hour)
+		}
+	}
+	return nil
+}
+
 func generatePayments(database string) error {
 	ctx := context.Background()
 	db, err := satellitedb.Open(ctx, zap.L().Named("db"), database, satellitedb.Options{ApplicationName: "satellite-compensation"})
@@ -78,7 +122,6 @@ func generatePayments(database string) error {
 		_ = db.Close()
 	}()
 
-	db.StoragenodeAccounting()
 	var paystubs []compensation.Paystub
 	var payments []compensation.Payment
 	now := time.Now()
