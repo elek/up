@@ -1,0 +1,25 @@
+pipeline {
+    agent any
+
+    options {
+          timeout(time: 240, unit: 'MINUTES')
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+               checkout scm
+            }
+        }
+		stage('Build and push containers') {
+			parallel {
+				stage('Lint') {
+					steps {
+						sh "go install github.com/magefile/mage@latest"
+						sh "mage -v images"
+					}
+				}
+			}
+		}
+    }
+}
