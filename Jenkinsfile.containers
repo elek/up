@@ -12,13 +12,9 @@ pipeline {
             }
         }
 		stage('Build and push containers') {
-			parallel {
-				stage('Lint') {
-					steps {
-						sh "go install github.com/magefile/mage@latest"
-						sh "mage -v images"
-					}
-				}
+			steps {
+			    sh "go install github.com/magefile/mage@latest"
+				sh "mage -v images"
 			}
 		}
     }
