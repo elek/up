@@ -13,7 +13,7 @@ pipeline {
         }
 		stage('Build and push containers') {
 			steps {
-			    withCredentials([string(credentialsId: 'STORJ_UP_IMAGE_UPLOAD', variable: 'GITHUB_TOKEN')]) {
+			    withCredentials([string(credentialsId: 'github-ghcr-elek-storjup', variable: 'GITHUB_TOKEN')]) {
 			        sh "go install github.com/magefile/mage@latest"
 				    sh "mage -v images"
 				}
