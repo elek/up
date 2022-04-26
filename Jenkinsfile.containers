@@ -1,5 +1,8 @@
+
 pipeline {
-    agent any
+    agent {
+        label 'jenkins-node-deploy'
+    }
 
     options {
           timeout(time: 240, unit: 'MINUTES')
