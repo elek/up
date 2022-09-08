@@ -9,7 +9,6 @@ lint:
     RUN check-copyright
     RUN check-large-files
     RUN check-imports -race ./...
-    RUN check-peer-constraints -race
     RUN check-atomic-align ./...
     RUN check-errs ./...
     RUN check-monkit ./...
@@ -36,8 +35,17 @@ test:
    SAVE ARTIFACT build/tests.json AS LOCAL build/tests.json
 
 integration:
-   COPY +build/storj-up /usr/local/bin/storj-up
-   COPY test/test.sh .
+   FROM earthly/dind:ubuntu
+   RUN apt-get update && apt-get install -y docker-compose-plugin gcc
+   RUN bash -c "curl --fail -L https://go.dev/dl/go1.17.12.linux-amd64.tar.gz | tar -C /usr/local -xz && cp /usr/local/go/bin/go /usr/local/bin/go"
+   RUN go install github.com/rclone/rclone@v1.59.1
+   RUN go install storj.io/storj/cmd/uplink@latest
+   RUN go install storj.io/storjscan/cmd/storjscan@latest
+   RUN go install github.com/rclone/rclone@v1.59.1
+   COPY +build/storj-up /root/go/bin/storj-up
+   ENV PATH=$PATH:/root/go/bin
+   WORKDIR /test
+   COPY ./test .
    WITH DOCKER
       RUN ./test.sh
    END
