@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: satellite-api
+  name: satellite-api
+spec:
+  minReadySeconds: 10
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: satellite-api
+      version: v3
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        prometheus.io/path: /metrics
+        prometheus.io/port: "5999"
+        prometheus.io/scrape: "true"
+      labels:
+        app: satellite-api
+        service: api
+        version: v3
+    spec:
+      containers:
+        - env:
+
+          image: storjlabs/satellite-tardigrade:v1.70.2-mars
+          imagePullPolicy: Always
+          name: satellite
+          ports:
+            - containerPort: 7777
+              name: drpc
+              protocol: TCP
+            - containerPort: 7777
+              name: drpc-udp
+              protocol: UDP
+            - containerPort: 10100
+              name: satellite-ui
+              protocol: TCP
+            - containerPort: 8090
+              name: marketing-ui
+              protocol: TCP
+            - containerPort: 5999
+              name: debug
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 3000m
+              memory: 4Gi
+            requests:
+              cpu: 3000m
+              memory: 4Gi
+          terminationMessagePath: /dev/termination-log
+          volumeMounts:
+            - mountPath: /root/.local/share/storj/satellite
+              name: satellite-config
+              readOnly: true
+            - mountPath: /root/.local/share/storj/identity/satellite/
+              name: satellite-certs
+              readOnly: true
+      volumes:
+        - name: satellite-certs
+          secret:
+            items:
+              - key: ca.cert
+                path: ca.cert
+              - key: identity.cert
+                path: identity.cert
+              - key: identity.key
+                path: identity.key
+            secretName: certs
+        - configMap:
+            defaultMode: 444
+            name: satellite-api-config
+          name: satellite-config

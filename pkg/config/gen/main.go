@@ -12,15 +12,15 @@ import (
 	"regexp"
 	"strings"
 	"text/template"
+	"unicode"
 
 	"github.com/zeebo/errs"
 
 	"storj.io/gateway-mt/pkg/auth"
 	"storj.io/gateway-mt/pkg/linksharing"
-	"storj.io/storj-up/cmd/config"
+	"storj.io/storj-up/pkg/config"
 	"storj.io/storj/satellite"
 	"storj.io/storj/storagenode"
-	"storj.io/storjscan"
 )
 
 var configTypes = map[string]reflect.Type{
@@ -30,7 +30,7 @@ var configTypes = map[string]reflect.Type{
 	"satellite-core":  reflect.TypeOf(satellite.Config{}),
 	"linksharing":     reflect.TypeOf(linksharing.Config{}),
 	"authservice":     reflect.TypeOf(auth.Config{}),
-	"storjscan":       reflect.TypeOf(storjscan.Config{}),
+	//"storjscan":       reflect.TypeOf(storjscan.Config{}),
 }
 
 func main() {
@@ -108,7 +108,7 @@ func generateSingle(templateDir string, name string, root reflect.Type) error {
 		return errs.Wrap(err)
 	}
 
-	options, err := collectOptions("STORJ", root)
+	options, err := collectOptions("", root)
 	if err != nil {
 		return errs.Wrap(err)
 	}
@@ -129,16 +129,20 @@ func goName(name string) string {
 }
 
 func collectOptions(prefix string, configType reflect.Type) (res []config.Option, err error) {
+	if prefix != "" {
+		prefix += "."
+	}
 	for i := 0; i < configType.NumField(); i++ {
 		field := configType.Field(i)
 		if field.Type.Kind() == reflect.Struct {
-			r, err := collectOptions(prefix+"_"+camelToUpperCase(field.Name), field.Type)
+			name := prefix + configName(field.Name)
+			r, err := collectOptions(name, field.Type)
 			if err != nil {
 				return res, errs.Wrap(err)
 			}
 			res = append(res, r...)
 		} else {
-			name := prefix + "_" + camelToUpperCase(field.Name)
+			name := prefix + configName(field.Name)
 			res = append(res, config.Option{
 				Name:        name,
 				Description: safe(field.Tag.Get("help")),
@@ -174,4 +178,34 @@ func getFileContents(file *os.File) string {
 		fileContent.WriteString(scanner.Text() + "\n")
 	}
 	return fileContent.String()
+}
+
+func hyphenate(val string) string {
+	return strings.ReplaceAll(val, "_", "-")
+}
+
+func configName(val string) string {
+	// don't you think this function should be in the standard library?
+	// seems useful
+	if len(val) <= 1 {
+		return strings.ToLower(val)
+	}
+	runes := []rune(val)
+	rv := make([]rune, 0, len(runes))
+	for i := 0; i < len(runes); i++ {
+		rv = append(rv, unicode.ToLower(runes[i]))
+		if i < len(runes)-1 &&
+			unicode.IsLower(runes[i]) &&
+			unicode.IsUpper(runes[i+1]) {
+			// lower-to-uppercase case
+			rv = append(rv, '_')
+		} else if i < len(runes)-2 &&
+			unicode.IsUpper(runes[i]) &&
+			unicode.IsUpper(runes[i+1]) &&
+			unicode.IsLower(runes[i+2]) {
+			// end-of-acronym case
+			rv = append(rv, '_')
+		}
+	}
+	return strings.ReplaceAll(string(rv), "_", "-")
 }

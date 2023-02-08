@@ -5,161 +5,161 @@ package config
 
 func linksharingConfig() []Option {
 	return []Option{
-
+		
 		{
-			Name:        "STORJ_SERVER_NAME",
+			Name:        "server.name",
 			Description: "",
 			Default:     "",
 		},
 		{
-			Name:        "STORJ_SERVER_ADDRESS",
+			Name:        "server.address",
 			Description: "",
 			Default:     "",
 		},
 		{
-			Name:        "STORJ_SERVER_ADDRESS_TLS",
+			Name:        "server.address-tls",
 			Description: "",
 			Default:     "",
 		},
 		{
-			Name:        "STORJ_SERVER_TRAFFIC_LOGGING",
+			Name:        "server.traffic-logging",
 			Description: "",
 			Default:     "",
 		},
 		{
-			Name:        "STORJ_SERVER_TLSCONFIG",
+			Name:        "server.tls-config",
 			Description: "",
 			Default:     "",
 		},
 		{
-			Name:        "STORJ_SERVER_SHUTDOWN_TIMEOUT",
+			Name:        "server.shutdown-timeout",
 			Description: "",
 			Default:     "",
 		},
 		{
-			Name:        "STORJ_HANDLER_URLBASES",
+			Name:        "handler.url-bases",
 			Description: "",
 			Default:     "",
 		},
 		{
-			Name:        "STORJ_HANDLER_TEMPLATES",
+			Name:        "handler.templates",
 			Description: "",
 			Default:     "",
 		},
 		{
-			Name:        "STORJ_HANDLER_STATIC_SOURCES_PATH",
+			Name:        "handler.static-sources-path",
 			Description: "",
 			Default:     "",
 		},
 		{
-			Name:        "STORJ_HANDLER_TXT_RECORD_TTL",
+			Name:        "handler.txt-record-ttl",
 			Description: "",
 			Default:     "",
 		},
 		{
-			Name:        "STORJ_HANDLER_AUTH_SERVICE_CONFIG_BASE_URL",
+			Name:        "handler.auth-service-config.base-url",
 			Description: "base url to use for resolving access key ids",
 			Default:     "",
 		},
 		{
-			Name:        "STORJ_HANDLER_AUTH_SERVICE_CONFIG_TOKEN",
+			Name:        "handler.auth-service-config.token",
 			Description: "auth token for giving access to the auth service",
 			Default:     "",
 		},
 		{
-			Name:        "STORJ_HANDLER_AUTH_SERVICE_CONFIG_TIMEOUT",
+			Name:        "handler.auth-service-config.timeout",
 			Description: "how long to wait for a single auth service connection",
 			Default:     "10s",
 		},
 		{
-			Name:        "STORJ_HANDLER_AUTH_SERVICE_CONFIG_BACK_OFF_DELAY",
+			Name:        "handler.auth-service-config.back-off.delay",
 			Description: "The active time between retries, typically not set",
 			Default:     "0ms",
 		},
 		{
-			Name:        "STORJ_HANDLER_AUTH_SERVICE_CONFIG_BACK_OFF_MAX",
+			Name:        "handler.auth-service-config.back-off.max",
 			Description: "The maximum total time to allow retries",
 			Default:     "5m",
 		},
 		{
-			Name:        "STORJ_HANDLER_AUTH_SERVICE_CONFIG_BACK_OFF_MIN",
+			Name:        "handler.auth-service-config.back-off.min",
 			Description: "The minimum time between retries",
 			Default:     "100ms",
 		},
 		{
-			Name:        "STORJ_HANDLER_AUTH_SERVICE_CONFIG_CACHE_EXPIRATION",
+			Name:        "handler.auth-service-config.cache.expiration",
 			Description: "how long to keep cached access grants in cache",
 			Default:     "24h",
 		},
 		{
-			Name:        "STORJ_HANDLER_AUTH_SERVICE_CONFIG_CACHE_CAPACITY",
+			Name:        "handler.auth-service-config.cache.capacity",
 			Description: "how many cached access grants to keep in cache",
 			Default:     "10000",
 		},
 		{
-			Name:        "STORJ_HANDLER_DNSSERVER",
+			Name:        "handler.dns-server",
 			Description: "",
 			Default:     "",
 		},
 		{
-			Name:        "STORJ_HANDLER_REDIRECT_HTTPS",
+			Name:        "handler.redirect-https",
 			Description: "",
 			Default:     "",
 		},
 		{
-			Name:        "STORJ_HANDLER_LANDING_REDIRECT_TARGET",
+			Name:        "handler.landing-redirect-target",
 			Description: "",
 			Default:     "",
 		},
 		{
-			Name:        "STORJ_HANDLER_UPLINK",
+			Name:        "handler.uplink",
 			Description: "",
 			Default:     "",
 		},
 		{
-			Name:        "STORJ_HANDLER_CONNECTION_POOL_CAPACITY",
+			Name:        "handler.connection-pool.capacity",
 			Description: "",
 			Default:     "",
 		},
 		{
-			Name:        "STORJ_HANDLER_CONNECTION_POOL_KEY_CAPACITY",
+			Name:        "handler.connection-pool.key-capacity",
 			Description: "",
 			Default:     "",
 		},
 		{
-			Name:        "STORJ_HANDLER_CONNECTION_POOL_IDLE_EXPIRATION",
+			Name:        "handler.connection-pool.idle-expiration",
 			Description: "",
 			Default:     "",
 		},
 		{
-			Name:        "STORJ_HANDLER_USE_QOS_AND_CC",
+			Name:        "handler.use-qos-and-cc",
 			Description: "",
 			Default:     "",
 		},
 		{
-			Name:        "STORJ_HANDLER_CLIENT_TRUSTED_IPS_LIST",
+			Name:        "handler.client-trusted-i-ps-list",
 			Description: "",
 			Default:     "",
 		},
 		{
-			Name:        "STORJ_HANDLER_USE_CLIENT_IPHEADERS",
+			Name:        "handler.use-client-ip-headers",
 			Description: "",
 			Default:     "",
 		},
 		{
-			Name:        "STORJ_HANDLER_STANDARD_RENDERS_CONTENT",
+			Name:        "handler.standard-renders-content",
 			Description: "",
 			Default:     "",
 		},
 		{
-			Name:        "STORJ_HANDLER_STANDARD_VIEWS_HTML",
+			Name:        "handler.standard-views-html",
 			Description: "",
 			Default:     "",
 		},
 		{
-			Name:        "STORJ_GEO_LOCATION_DB",
+			Name:        "geo-location-db",
 			Description: "",
 			Default:     "",
 		},
-	}
+   }
 }

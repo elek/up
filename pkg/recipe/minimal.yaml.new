@@ -1,0 +1,81 @@
+add:
+    - command:
+        - satellite
+        - run
+        - api
+        - --defaults=dev
+        - --identity-dir={{ Environment .This "identityDir" }}
+      config:
+        console.address: '{{ Host .This "listen" }}:{{ Port .This "console"}}'
+        console.auth-token-secret: my-suppa-secret-key
+        console.external-address: http://{{ Host .This "external"}}:{{ Port .This "console"}}/
+        console.gateway-credentials-request-url: http://{{ Host "authservice" "external"}}:{{ Port "authservice" "public"}}
+        console.linksharing-url: http://{{ Host "linksharing" "external" }}:{{ Port "linksharing" "public"}}
+        console.open-registration-enabled: "true"
+        console.rate-limit.burst: "10000"
+        console.static-dir: '{{ Environment .This "staticDir" }}'
+        contact.external-address: '{{ Host .This "internal"}}:{{ Port .This "public"}}'
+        database: '{{ Environment "cockroach" "main" }}'
+        debug.addr: '{{ Host .This "listen" }}:{{ Port .This "debug"}}'
+        live-accounting.storage-backend: '{{ Environment "redis" "url" }}?db=0'
+        log.level: debug
+        mail.from: Storj <storj-up@storj.io>
+        mail.smtp-server-address: smtp.gmail.com:587
+        mail.template-path: '{{ Environment .This "mailTemplateDir" }}'
+        metainfo.database-url: '{{ Environment "cockroach" "metainfo" }}'
+        metainfo.rate-limiter.enabled: "false"
+        metrics.app-suffix: sim
+        orders.encryption-keys: 0100000000000000=0100000000000000000000000000000000000000000000000000000000000000
+        server.address: '{{ Host .This "listen" }}:{{ Port .This "public"}}'
+        server.extensions.revocation: "false"
+        server.revocation-dburl: '{{ Environment "redis" "url" }}?db=1'
+        server.use-peer-ca-whitelist: "false"
+      environment:
+        STORJ_ADDRESS: '{{ Host .This "listen" }}:{{ Port .This "public"}}'
+        STORJ_DEFAULTS: dev
+        STORJ_IDENTITY_DIR: '{{ Environment .This "identityDir" }}'
+        STORJ_USE_PREDEFINED_IDENTITY: 1
+      image: img.dev.storj.io/storjup/storj:1.68.2
+      label:
+        - storj
+        - core
+      name: satellite-api
+      persistence:
+        - /var/lib/storj/.local/share/storj
+    - command:
+        - storagenode
+        - run
+        - api
+        - --defaults=dev
+        - --identity-dir={{ Environment .This "identityDir" }}
+      config:
+        console.address: '{{ Host .This "listen" }}:{{ Port .This "console" }}'
+        console.static-dir: '{{ Environment .This "staticDir" }}'
+        contact.external-address: '{{ Host .This "internal" }}:{{ Port .This "public" }}'
+        debug.addr: '{{ Host .This "listen" }}:{{ Port .This "debug" }}'
+        log.level: debug
+        metrics.app-suffix: sim
+        operator.email: storage9@mail.test
+        operator.wallet: 0x0123456789012345678901234567890123456789
+        server.address: '{{ Host .This "listen" }}:{{ Port .This "public" }}'
+        server.extensions.revocation: "false"
+        server.private-address: '{{ Host .This "listen" }}:{{ Port .This "private" }}'
+        server.use-peer-ca-whitelist: "false"
+        storage.allocated-disk-space: 1G
+        storage2.monitor.minimum-disk-space: "0"
+        storage2.trust.sources: '{{ Environment "satellite-api" "identity" }}@{{ Host "satellite-api" "internal" }}:{{ Port "satellite-api" "public" }}'
+      environment:
+        STORJ_DEFAULTS: dev
+        STORJ_IDENTITY_DIR: '{{ Environment .This "identityDir" }}'
+        STORJUP_AUTHSERVICE: http://authservice:8888
+        STORJUP_SATELLITE: satellite-api
+      image: img.dev.storj.io/storjup/storj:1.68.2
+      instance: 10
+      label:
+        - storj
+        - core
+      name: storagenode
+      persistence:
+        - /var/lib/storj/.local/share/storj
+description: 'The absolute minimal services to persist a file: satellite-api and storagenodes'
+name: minimal

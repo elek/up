@@ -1,0 +1,31 @@
+add:
+    - command:
+        - satellite
+        - run
+        - --defaults=dev
+        - --identity-dir={{ Environment .This "identityDir" }}
+      config:
+        STORJ_DATABASE: '{{ Environment "cockroach" "main" }}'
+        STORJ_DEBUG_ADDR: '{{ Host .This "listen" }}:{{ Port .This "debug"}}'
+        STORJ_LOG_LEVEL: debug
+        STORJ_METRICS_APP_SUFFIX: sim
+        STORJ_ORDERS_ENCRYPTION_KEYS: 0100000000000000=0100000000000000000000000000000000000000000000000000000000000000
+        live-accounting.storage-backend: '{{ Environment "redis" "url" }}?db=1'
+        mail.from: Storj <storj-up@storj.io>
+        mail.smtp-server-address: smtp.gmail.com:587
+        mail.template-path: '{{ Environment .This "mailTemplateDir" }}'
+        metainfo.database-url: '{{ Environment "cockroach" "metainfo" }}'
+      environment:
+        STORJ_DEFAULTS: dev
+        STORJ_IDENTITY_DIR: '{{ Environment .This "identityDir" }}'
+        STORJUP_AUTHSERVICE: http://authservice:8888
+        STORJUP_SATELLITE: satellite-api
+      image: img.dev.storj.io/storjup/storj:1.68.2
+      label:
+        - storj
+        - core
+      name: satellite-core
+      persistence:
+        - /var/lib/storj/.local/share/storj
+description: satellite-core service
+name: core

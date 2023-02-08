@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"os"
+	"storj.io/storj-up/pkg/runtime/k8s"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -41,6 +42,36 @@ func initCmd() *cobra.Command {
 			}
 			if *ip != "" {
 				n.External = *ip
+			}
+
+			st, err := recipe.GetStack()
+			if err != nil {
+				return err
+			}
+			err = runtime.ApplyRecipes(st, n, normalizedArgs(args))
+			if err != nil {
+				return err
+			}
+
+			return n.Write()
+		}
+		cmd.AddCommand(nomadCmd)
+	}
+
+	{
+		nomadCmd := &cobra.Command{
+			Use:     "k8s [selector]",
+			Aliases: []string{"kubernetes"},
+		}
+
+		nomadCmd.RunE = func(cmd *cobra.Command, args []string) error {
+			pwd, err := os.Getwd()
+			if err != nil {
+				return err
+			}
+			n, err := k8s.NewKubernetes(pwd)
+			if err != nil {
+				return err
 			}
 
 			st, err := recipe.GetStack()
